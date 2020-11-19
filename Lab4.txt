@@ -1,0 +1,46 @@
+z3
+a. SELECT nazwa from postac WHERE nazwa LIKE '%a%';
+update postac set nazwa_statku='Twt' where nazwa like %a%;
+
+b. update statek set max_ladownosc=max_ladownosc*0.7 where data_wodowania between '1901-01-01' and '2000-12-31';
+
+c. alter table postac add check(wiek<=1030);
+	
+
+
+z4
+a. alter table postac modify rodzaj('waz','wiking','ptak','kobieta','syrena');
+INSERT INTO postac VALUES(10, 'Loko', 'waz', '1500-01-05', 520, default, default,12345678912);
+
+b. create table marynarz select * from postac; z postaciami, bez klucza obcego i głownego
+
+c. ALTER TABLE marynarz ADD PRIMARY KEY(pesel);
+ALTER TABLE marynarz ADD FOREIGN KEY (nazwa_statku) REFERENCES statek(nazwa_statku);
+
+
+
+z5
+a. UPDATE postac SET nazwa_statku=default;
+UPDATE marynarz SET nazwa_statku=default;
+
+b. DELETE FROM postac WHERE nazwa='Ragnar';
+DELETE FROM marynarz WHERE nazwa='Ragnar';
+
+c. DELETE FROM statek;
+
+d. ALTER TABLE postac DROP FOREIGN KEY postac_ibfk_1;
+ALTER TABLE marynarz DROP FOREIGN KEY marynarz_ibfk_1;
+DROP TABLE statek;
+
+e. CREATE TABLE zwierz (id INT AUTO_INCREMENT PRIMARY KEY, nazwa varchar(40), wiek INT(5));
+
+f. insert into zwierz select id_postaci,nazwa,wiek from postac where rodzaj='syrena';
+insert into zwierz select id_postaci,nazwa,wiek from postac where rodzaj='ptak';
+insert into zwierz select id_postaci,nazwa,wiek from postac where rodzaj='waz';
+
+
+
+
+
+3c.alter table postac add [constraint check_wiek_le_1000] check (wiek<=1000);
+4b.create table marynarz_2 like postac; bez postaci, z kluczem glownym i obcym
