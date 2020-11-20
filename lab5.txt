@@ -1,0 +1,31 @@
+create table ... like ...;
+insert into .... select * from  ...;
+select * from nazwabazy.nazwatabeli;
+
+1.
+a)create table kreatura like wikingowie.kreatura;
+create table zasob like wikingowie.zasob;
+create table ekwipunek like wikingowie.ekwipunek;
+alter table ekwipunek add foreign key (idKreatury) references kreatura(idKreatury);
+alter table zasob add foreign key (idZasobu) references zasob(idZasobu);
+insert into kreatura select * from  wikingowie.kreatura;
+insert into zasob select * from  wikingowie.zasob;
+insert into ekwipunek select * from  wikingowie.ekwipunek;
+b) select * from zasob;
+c)select * from zasob where rodzaj='jedzenie';
+d)select idZasobu, ilosc from ekwipunek where idKreatury in(1,3,5);
+
+2.
+a)select * from kreatura where not rodzaj='wiedzma' and udzwig>=50;
+b)select * from zasob where waga between 2 and 5;
+c)SELECT * from kreatura WHERE nazwa LIKE '%or%' and udzwig between 30 and 70;
+
+3.
+a)select * from zasob where dataPozyskania like "____-07-__" or dataPozyskania Like "____-07-__";
+albo select dataPozyskania from zasob where month(dataPozyskania) in (7,8);
+b)select * from zasob where rodzaj!='' order by waga asc; 
+albo select * from zasob where rodzaj is not null order by waga asc;
+c)select * from kreatura order by dataUr asc limit 5;
+
+4.
+a)select distinct(rodzaj) from zasob;
