@@ -29,3 +29,10 @@ c)select * from kreatura order by dataUr asc limit 5;
 
 4.
 a)select distinct(rodzaj) from zasob;
+b)SELECT CONCAT(nazwa,' ',rodzaj) As nazwa FROM kreatura WHERE rodzaj like "wi%";
+c) select concat(nazwa, " - ", waga*ilosc) from zasob where YEAR(dataPozyskania) between 2000 and 2007;
+ 
+5.
+a)SELECT concat(nazwa," ",waga*0.7) AS masa_netto, waga*0.3 AS odpadki FROM zasob WHERE rodzaj='jedzenie';
+b)select * from zasob where rodzaj is null;
+c)SELECT DISTINCT(rodzaj), nazwa FROM zasob WHERE nazwa LIKE 'ba%' or nazwa LIKE '%os' ORDER BY rodzaj ASC;
