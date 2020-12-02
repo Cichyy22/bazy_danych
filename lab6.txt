@@ -1,0 +1,64 @@
+select avg(ilosc) from zasob;
+select round(avg(ilosc)) from zasob;
+select round(avg(ilosc),2) from zasob;
+select rodzaj, avg(waga) from zasob group by rodzaj;
+select idZasobu, sum(ilosc) from ekwipunek group by idZasobu;
+select idZasobu, sum(ilosc) from ekwipunek group by idZasobu having sum(ilosc)>50;
+select idZasobu as ID, sum(ilosc) as suma from ekwipunek group by idZasobu having sum(ilosc)>50;
+select k.nazwa, k.idKreatury, e.idKreatury, e.idZasobu from kreatura k, ekwipunek e where k.idKreatury=e.idKreatury;
+
+select k.nazwa, k.idKreatury, e.idKreatury, e.idZasobu from kreatura inner join ekwipunek e on k.idKreatury=e.idKreatury;
+
+select *, ekwipunek.idZasobu, ekwipunek.ilosc
+from zasob natural join ekwipunek;
+
+select u.max,u.min from
+(select rodzaj, max(dataUr) as 'max', min(dataUr) as 'min' from kreatura group by rodzaj
+kreatura k where k.dataUr=u.max or k.dataUr=u.min;
+
+
+1.
+a) select avg(waga) as srednia_masa_wikingow from kreatura where rodzaj='wiking';
+b) select rodzaj, count(*), avg(waga) from kreatura group by rodzaj;
+c) select rodzaj, avg(2020-year(dataUr)) from kreatura;
+
+2.
+a)SELECT sum(waga) AS suma_waga,rodzaj FROM zasob GROUP BY rodzaj;
+b)SELECT AVG(waga) AS srednia_waga,nazwa FROM zasob WHERE ilosc>=4 GROUP BY nazwa HAVING avg(waga)>10;
+SELECT AVG(waga) AS srednia_waga,nazwa FROM zasob WHERE ilosc>=4 GROUP BY nazwa HAVING sum(waga)>10;
+c)select count(nazwa) as iloscRoznych, rodzaj from zasob group by rodzaj  having sum(ilosc)>1;
+
+3.
+a)select k.nazwa, k.idKreatury, sum(e.ilosc) from kreatura k join ekwipunek e on k.idKreatury=e.idKreatury group by e.idKreatury;
+b)SELECT k.nazwa, z.nazwa FROM kreatura k JOIN ekwipunek e ON k.idKreatury=e.idKreatury JOIN zasob z ON e.idZasobu=z.idZasobu;
+c)select k.nazwa, k.idKreatury, e.idKreatury from kreatura k left join ekwipunek e on k.idKreatury=e.idKreatury where e.idKreatury is null;
+
+4.
+a) SELECT kreatura.nazwa, kreatura.dataUr, zasob.nazwa FROM kreatura NATURAL JOIN ekwipunek INNER JOIN zasob ON ekwipunek.idZasobu=zasob.idZasobu WHERE YEAR(kreatura.dataUr) BETWEEN '1670' AND '1679';
+b)SELECT kreatura.nazwa, zasob.rodzaj FROM kreatura INNER JOIN ekwipunek ON kreatura.idKreatury=ekwipunek.idKreatury INNER JOIN zasob ON ekwipunek.idZasobu=zasob.idZasobu WHERE zasob.rodzaj='jedzenie' ORDER BY YEAR(kreatura.dataUr) DESC LIMIT 5;
+c)SELECT k.nazwa AS Kreatura_1, k1.nazwa AS Kreatura_2 FROM kreatura k INNER JOIN kreatura k1 ON k1.idKreatury=k.idKreatury-5;
+
+5.
+a)select k.rodzaj, avg(z.waga) as srednia_waga_wikingow from kreatura k inner join ekwipunek e on k.idKreatury=e.idKreatury inner join zasob z on e.idZasobu=z.idZasobu group by k.rodzaj having k.rodzaj!='malpa' and k.rodzaj!='waz' and sum(z.ilosc)<30;
+
+select k.rodzaj, sum(e.ilosc), sum(e.ilosc*z.waga), avg(e.ilosc*z.waga) 
+from kreatura k, ekwipunek e, zasob z 
+where k.idKreatury=e.idKreatury and e.idZasobu=z.idZasobu group by k.rodzaj;
+
+b)select a.nazwa, a.rodzaj, a.dataUr from kreatura a, (SELECT min(dataUr) min, max(dataUr) max
+from kreatura group by rodzaj) b WHERE b.min = a.dataUr OR b.max=a.dataUr;
+
+select 'najmlodsza',a.maxData, b.nazwa, a.rodzaj
+from (select max(dataUr) maxData, rodzaj from kreatura group by rodzaj) a,
+(select nazwa, dataUr from kreatura) b where a.maxData = b.dataUr
+union
+select 'najstarsza',a.minData, b.nazwa, a.rodzaj
+from (select min(dataUr) minData, rodzaj from kreatura group by rodzaj) a,
+(select nazwa, dataUr from kreatura) b
+where a.minData = b.dataUr;
+
+
+
+
+
+Projekt: model(5-8 tabel) w workbenchu, relacje, sensowne dane, prefix w nazwach np projekt_klienci,projekt_faktury
