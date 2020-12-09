@@ -1,0 +1,59 @@
+select rodzaj, group_concat(nazwa separator " -> ")
+from kreatura group by rodzaj;
+select nazwa, ifnull(rodzaj,"brak rodzaju") from zasob;
+select nazwa, if(rodzaj is null,"brak rodzaju",rodzaj) from zasob;
+select nazwa, length(nazwa) from kreatura;
+SELECT nazwa, length(dataUr) from kreatura;
+SELECT nazwa, udzwig, length(udzwig) from kreatura;
+
+
+
+1.
+b)select nazwa from kreatura where idKreatury not in (select id_uczestnika from uczestnicy);
+c)SELECT w.nazwa, sum(e.ilosc) AS ilosc_ekwipunku FROM wyprawa w INNER JOIN uczestnicy u INNER JOIN kreatura k ON u.id_uczestnika=k.idKreatury INNER JOIN ekwipunek e ON k.idKreatury=e.idEkwipunku GROUP BY w.nazwa;
+
+2.
+a) select t1.nazwa,count(p1.id_uczestnika) as liczba, group_concat(c1.nazwa separator " ") from kreatura c1 join uczestnicy p1 on c1.idKreatury=p1.id_uczestnika join wyprawa t1 on p1.id_wyprawy=t1.id_wyprawy group by t1.nazwa order by t1.nazwa;
+
+b) select idEtapu,t1.id_wyprawy, s1.nazwa,data_rozpoczecia,c1.nazwa
+from kreatura c1 
+join uczestnicy p1 on c1.idKreatury = p1.id_uczestnika 
+join wyprawa t1 on p1.id_wyprawy=t1.id_wyprawy 
+join etapy_wyprawy t2 on t1.id_wyprawy=t2.idWyprawy join sektor s1 on t2.sektor=s1.id_sektora
+where c1.idKreatury = t1.kierownik
+order by data_rozpoczecia, kolejnosc;
+
+3.
+a)select nazwa, ifnull(count(idWyprawy), "0") as liczba_odwiedzin 
+from etapy_wyprawy e2 right join sektor s on e2.sektor=s.id_sektora
+group by id_sektora
+order by id_sektora;
+
+b) select k.nazwa, if(count(id_wyprawy) =0,"nie brał udziału w wyprawie","brał udział w wyprawie")
+from kreatura k left join uczestnicy u on k.idKreatury=u.id_uczestnika
+group by nazwa;
+
+4.
+a)  select nazwa, sum(length(dziennik)) from wyprawa w1 
+ join etapy_wyprawy ew on w1.id_wyprawy = ew.idWyprawy 
+ GROUP BY w1.nazwa
+having sum(length(dziennik)) < 400;
+
+b) SELECT w.nazwa,
+COUNT(DISTINCT(u.id_uczestnika)),
+SUM(e.ilosc*z.waga)/COUNT(DISTINCT(u.id_uczestnika)) AS "średnia waga"
+FROM wyprawa AS w
+LEFT JOIN uczestnicy AS u ON w.id_wyprawy = u.id_wyprawy
+LEFT JOIN kreatura AS k ON u.id_uczestnika = k.idKreatury
+LEFT JOIN ekwipunek AS e ON k.idKreatury= e.idKreatury
+LEFT JOIN zasob AS z ON e.idZasobu = z.idZasobu
+GROUP BY w.nazwa;
+
+5.
+a) SELECT k.nazwa, datediff(w.data_rozpoczecia, k.dataUr) AS 'Wiek w dniach' FROM kreatura k
+JOIN uczestnicy u ON u.id_uczestnika=k.idKreatury
+JOIN wyprawa w ON w.id_wyprawy=u.id_wyprawy
+JOIN etapy_wyprawy eW ON eW.idWyprawy=w.id_wyprawy
+JOIN sektor s ON s.id_sektora= eW.sektor
+WHERE s.nazwa='Chatka dziadka';
+
