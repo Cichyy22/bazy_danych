@@ -1,0 +1,88 @@
+DELIMITER //
+1.
+CREATE TRIGGER waga_before_insert
+BEFORE INSERT ON kreatura
+FOR EACH ROW
+BEGIN
+  IF NEW.waga < 0
+  THEN
+    SET NEW.waga = 0;
+  END IF;
+END
+//
+DELIMITER ;
+
+2.
+CREATE TABLE  archiwum_wypraw(id_wyprawy int AUTO_INCREMENT PRIMARY KEY,
+ nazwa varchar(255), data_rozpoczecia DATE, data_zakonczenia DATE, kierownik varchar(255));
+
+create table wyprawa select *from wikingowie.wyprawa;
+
+DELIMITER //
+CREATE TRIGGER uczestnicy_after_delete_wyprawa1
+BEFORE DELETE ON wyprawa
+FOR EACH ROW
+BEGIN
+  INSERT INTO archiwum_wypraw(nazwa, data_rozpoczecia, data_zakonczenia,kierownik)
+    VALUES (OLD.nazwa, OLD.data_rozpoczecia, OLD.data_zakonczenia, 
+    (SELECT nazwa from kreatura where kreatura.idKreatury=OLD.kierownik));
+END
+//
+
+3.
+a) DELIMITER //
+CREATE PROCEDURE eliksir_sily(IN id int)
+BEGIN
+Update kreatura set udzwig= 1.2 * udzwig where id_kreatury=id;
+END
+//
+DELIMITER ;
+
+b) DELIMITER //
+CREATE PROCEDURE wielka_nazwa(IN id int, OUT tekst VARCHAR(255))
+BEGIN
+SELECT UPPER(nazwa) INTO tekst from kreatura where idKreatury=id;
+END
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE FUNCTION duzyText(text varchar(100))
+RETURNS varchar(100)
+BEGIN
+DECLARE caps varchar(100);
+SELECT UPPER(text) INTO caps;
+RETURN caps;
+END //
+
+4.
+b) DELIMITER //
+CREATE TRIGGER TesciowaNadchodzi
+AFTER INSERT ON uczestnicy
+FOR EACH ROW
+BEGIN
+
+IF ( SELECT id_uczestnika=14 from uczestnicy where id_wyprawy=NEW.id_wyprawy) AND
+(SELECT sektor=7 FROM etapy_wyprawy WHERE idWyprawy=NEW.id_wyprawy)
+
+THEN
+
+INSERT INTO system_alarmowy VALUES(default,'Tesciowa nadchodzi !!!');
+END IF;
+END
+//
+
+5.
+a)DELIMITER //
+CREATE PROCEDURE zmienne(out srednia double, out suma double, out max double)
+BEGIN
+SELECT avg(udzwig), sum(udzwig), MAX(udzwig) INTO srednia,suma,max from kreatura;
+END
+//
+DELIMITER ;
+
+
+
+
+
+
